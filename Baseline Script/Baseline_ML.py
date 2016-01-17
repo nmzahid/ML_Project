@@ -1,10 +1,11 @@
 
 # coding: utf-8
 
-# In[51]:
+# In[68]:
 
 import pandas as pd
 import numpy as np
+import xml.etree.cElementTree as ET
 
 data = pd.read_csv(open('profile.csv'))
 print(data)
@@ -41,5 +42,22 @@ output_data['con']=avg_con
 output_data['ext']=avg_ext
 output_data['agr']=avg_agr
 output_data['neu']=avg_neu
-output_data
+del output_data['Unnamed: 0']
+
+output_arr=output_data.as_matrix([output_data.columns])
+a=0   
+for row in output_arr:
+    if row[2]==1:
+        gend="female"
+    else:
+        gend="male"
+    xmlel = ET.Element("user-id="+str(row[0])+"\n"+"age_group="+str(row[1])+"\n"+"gender="+gend+"\n"+"extrovert="+str(row[5])+"\n"+"neurotic="+str(row[7])+"\n"+"agreeable="+str(row[6])+"\n"+"conscientious="+str(row[4])+"\n"+"open="+str(row[3])+"\n")
+    tree = ET.ElementTree(xmlel)
+    tree.write(str(row[0])+".xml")
+    if a>3:
+        break
+    a=a+1
+        
+
+
 
